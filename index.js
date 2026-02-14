@@ -107,6 +107,12 @@ async function run() {
       
 
         // payment api
+        app.get("/single/:email", async (req, res) => {
+            const email = req.params.email
+            const query = { email: email }
+            const result = await paymentscoll.find(query).toArray()
+            res.send(result)
+        })
         app.post("/payment", async (req, res) => {
             
             const data = req.body 
@@ -120,6 +126,7 @@ async function run() {
             const result = await paymentscoll.find().toArray()
             res.send(result)
         })
+    
         app.patch("/payment/:id", async (req, res) => {
             const id = req.params.id 
             const data = req.body 
