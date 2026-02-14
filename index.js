@@ -93,6 +93,15 @@ async function run() {
 
             res.send(result)
         })
+
+        app.get("/role/user/:email", async (req, res) => {
+            
+
+            
+            const email = req.params.email
+            const result = await usercoll.findOne({ email: email })
+            res.send(result)
+        })
       
 
         // payment api
