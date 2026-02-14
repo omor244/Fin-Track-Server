@@ -5,6 +5,13 @@ const cors = require('cors')
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb')
 const port = 3000 || process.env.PORT
 
+const admin = require("firebase-admin");
+
+const serviceAccount = require("./serviceAccountKey.json");
+
+admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount)
+});
 
 
 
@@ -74,7 +81,7 @@ async function run() {
         })
         
 
-        app.patch("/users/:id", async (req, res) => {
+        app.patch("/users/:id", verifyJWT, async (req, res) => {
             const id = req.params.id
             const query = {_id: new ObjectId(id)}
             const data = req.body 
@@ -88,7 +95,7 @@ async function run() {
 
            
         })
-        app.delete("/users/:id", async (req, res) => {
+        app.delete("/users/:id", verifyJWT, async (req, res) => {
             const id = req.params.id
             const query = { _id: new ObjectId(id) }
             const result = await usercoll.deleteOne(query)
@@ -96,7 +103,7 @@ async function run() {
             res.send(result)
         })
 
-        app.get("/role/user/:email", async (req, res) => {
+        app.get("/role/user/:email", verifyJWT, async (req, res) => {
             
 
 
@@ -107,13 +114,13 @@ async function run() {
       
 
         // payment api
-        app.get("/single/:email", async (req, res) => {
+        app.get("/single/:email", verifyJWT, async (req, res) => {
             const email = req.params.email
             const query = { email: email }
             const result = await paymentscoll.find(query).toArray()
             res.send(result)
         })
-        app.post("/payment", async (req, res) => {
+        app.post("/payment", verifyJWT, async (req, res) => {
             
             const data = req.body 
             const result = await paymentscoll.insertOne(data)
