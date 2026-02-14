@@ -41,6 +41,7 @@ async function run() {
 
     const db = client.db("FIN-TRACK")
     const usercoll = db.collection('users')
+    const paymentscoll = db.collection('payments')
 
     try {
 
@@ -64,6 +65,47 @@ async function run() {
 
             }
 
+ })
+        
+        app.get("/users", async (req, res) => {
+            const result = await usercoll.find().toArray()
+            res.send(result)
+        })
+      
+
+        // payment api
+        app.post("/payment", async (req, res) => {
+            
+            const data = req.body 
+            const result = await paymentscoll.insertOne(data)
+
+            res.send(result)
+        })
+
+        app.get("/payment", async (req, res) => {
+            
+            const result = await paymentscoll.find().toArray()
+            res.send(result)
+        })
+        app.patch("/payment/:id", async (req, res) => {
+            const id = req.params.id 
+            const data = req.body 
+            const updatedDoc = {
+                $set: {
+                    status: data.status
+                }
+            }
+            const query = { _id: new ObjectId(id) }
+            const result = await paymentscoll.updateOne(query, updatedDoc)
+
+            res.send(result)
+        })
+        app.delete("/payment/:id", async (req, res) => {
+            const id = req.params.id 
+            const query = { _id: new ObjectId(id) }
+            const result = await paymentscoll.deleteOne(query)
+
+            res.send(result)
         })
 
 
