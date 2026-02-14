@@ -71,6 +71,28 @@ async function run() {
             const result = await usercoll.find().toArray()
             res.send(result)
         })
+
+        app.patch("/users/:id", async (req, res) => {
+            const id = req.params.id
+            const query = {_id: new ObjectId(id)}
+            const data = req.body 
+            const updatedDoc = {
+                $set: {
+                    role: data.role
+                }
+            }
+            const result = await usercoll.updateOne(query, updatedDoc)
+            res.send(result)
+
+           
+        })
+        app.delete("/users/:id", async (req, res) => {
+            const id = req.params.id
+            const query = { _id: new ObjectId(id) }
+            const result = await usercoll.deleteOne(query)
+
+            res.send(result)
+        })
       
 
         // payment api
