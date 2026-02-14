@@ -171,6 +171,7 @@ async function run() {
         app.get("/trips", async (req, res) => {
            
             const result = await tripsscoll.aggregate([{ $sample: { size: 6 } }]).toArray();
+            console.log(result)
             res.send(result);
         });
 
