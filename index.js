@@ -72,6 +72,7 @@ async function run() {
             const result = await usercoll.find().toArray()
             res.send(result)
         })
+        
 
         app.patch("/users/:id", async (req, res) => {
             const id = req.params.id
@@ -125,6 +126,19 @@ async function run() {
             const updatedDoc = {
                 $set: {
                     status: data.status
+                }
+            }
+            const query = { _id: new ObjectId(id) }
+            const result = await paymentscoll.updateOne(query, updatedDoc)
+
+            res.send(result)
+        })
+        app.patch("/type/payment/:id", async (req, res) => {
+            const id = req.params.id 
+            const data = req.body 
+            const updatedDoc = {
+                $set: {
+                    type: data.type
                 }
             }
             const query = { _id: new ObjectId(id) }
