@@ -42,6 +42,7 @@ async function run() {
     const db = client.db("FIN-TRACK")
     const usercoll = db.collection('users')
     const paymentscoll = db.collection('payments')
+    const tripsscoll = db.collection('trips')
 
     try {
 
@@ -97,7 +98,7 @@ async function run() {
         app.get("/role/user/:email", async (req, res) => {
             
 
-            
+
             const email = req.params.email
             const result = await usercoll.findOne({ email: email })
             res.send(result)
@@ -138,6 +139,19 @@ async function run() {
 
             res.send(result)
         })
+
+        app.post("/trips", async (req, res) => {
+            
+            const data = req.body 
+            const result = await tripsscoll.insertOne(data)
+            res.send(result)
+        })
+
+        app.get("/trips", async (req, res) => {
+           
+            const result = await tripsscoll.aggregate([{ $sample: { size: 6 } }]).toArray();
+            res.send(result);
+        });
 
 
 
